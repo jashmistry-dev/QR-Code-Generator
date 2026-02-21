@@ -20,37 +20,20 @@ app.use(express.static("public")); // or current folder if saving in root
 //exprss code
 
 app.post("/generate", (req, res) => {
-let uniqueId = Date.now();
+const frontendUrl = req.body.url;
 
-  const FrontendUrl = req.body.url;
-  console.log(FrontendUrl);
+  if (!frontendUrl) {
+    return res.status(400).json({ error: "URL is required" });
+  }
 
-  var qr_svg = qr.image(FrontendUrl, { type: "svg" });
-  
-  qr_svg.pipe(fs.createWriteStream("public/qr-images/"+uniqueId+".svg"));
+  const qr_svg = qr.image(frontendUrl, { type: "svg" });
 
-  var svg_string = qr.imageSync(FrontendUrl, { type: "svg" });
-
-  // e.g. turn every black square into red
-
-
-  res.json({imageUrl : (uniqueId+".svg")})
-
-
-  // 3. Create a txt file to save the user input using the native fs node module.
-  fs.writeFile("url.txt", FrontendUrl, (err) => {
-    {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("done");
-      }
-    }
-  });
+  res.type("svg");
+  qr_svg.pipe(res);
 });
 
 app.listen(PORT, () => {
-  console.log(`http://localhost:${PORT}/`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 

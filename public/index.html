@@ -19,7 +19,7 @@
           <input class="form-control Iurl"
           id="exampleInputUrl"
           aria-describedby="emailHelp" type="text" placeholder="Enter the url to get the qr code" name="url"/>
-          <button type="buttons" id="Sbtn" class="button">Generate</button>
+          <button type="button" id="Sbtn" class="button">Generate</button>
 </div>
 
 
@@ -70,7 +70,7 @@
         var Text = document.getElementById("qr-code-url")
        
 
-    fetch("http://localhost:3000/generate", {
+    fetch("https://qr-code-generator-l524.onrender.com/generate", {
       method: "POST",             // or "GET", depending on your backend
       headers: {
         "Content-Type": "application/json",  // tell backend you're sending JSON
@@ -89,7 +89,7 @@
       
         console.log("Fetch success:", LastGenQrCodeImg);
 
-        document.querySelector("#qrCode").setAttribute("src",("http://localhost:3000/qr-images/"+LastGenQrCodeImg));
+        document.querySelector("#qrCode").setAttribute("src",("https://qr-code-generator-l524.onrender.com/"+LastGenQrCodeImg));
         console.log(safeUrl)
           Text.setAttribute("href",safeUrl);
           Text.textContent = UserUrl;
@@ -109,7 +109,7 @@
       return;
     }
 
-            var qrCodeBaseUri = ("http://localhost:3000/qr-images/"+LastGenQrCodeImg);
+            var qrCodeBaseUri = ("https://qr-code-generator-l524.onrender.com/qr-images/"+LastGenQrCodeImg);
 
              const a = document.createElement("a");
               a.href = qrCodeBaseUri;
