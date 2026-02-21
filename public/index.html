@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Qr Generator</title>
+    <link rel="stylesheet" href="style.css">
+
+  </head>
+
+
+  <body class="gradient-background">
+    <h1 id="level-title">Qr Code Generator</h1>
+    <div class="container">
+
+        <div class="mb-3">
+          
+
+          <div class="input-container">
+          <input class="form-control Iurl"
+          id="exampleInputUrl"
+          aria-describedby="emailHelp" type="text" placeholder="Enter the url to get the qr code" name="url"/>
+          <button type="buttons" id="Sbtn" class="button">Generate</button>
+</div>
+
+
+          
+
+      </div>
+      <div class="img"><img id="qrCode" height="300px" src="" alt="Qr code will appears here..."><br>
+      <a target="_blank" href="" id="qr-code-url" >Link...</a></div>
+
+
+      <!-- From Uiverse.io by vinodjangid07 --> 
+      <a  id="Dqr" class="bookmarkBtn"  >
+        <span class="IconContainer">
+          <svg viewBox="0 0 384 512" height="0.9em" class="icon">
+            <path
+              d="M0 48V487.7C0 501.1 10.9 512 24.3 512c5 0 9.9-1.5 14-4.4L192 400 345.7 507.6c4.1 2.9 9 4.4 14 4.4c13.4 0 24.3-10.9 24.3-24.3V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48z"
+            ></path> 
+          </svg>
+        </span>
+        <p class="text">Save</p>
+      </a>
+
+
+    <footer>Made with 💖 by Jash...</footer>
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script>
+        // const FURL = document.querySelector("#exampleInputUrl").value
+
+        let LastGenQrCodeImg = ""
+       
+      //generate qr code
+      document.querySelector("#Sbtn").addEventListener("click",function(event){
+        event.preventDefault();
+        const UserUrl = document.querySelector("#exampleInputUrl").value
+        if(!UserUrl){
+          alert("Enter a url...")
+          return false;
+        }
+        let safeUrl = UserUrl;
+        if (!UserUrl.startsWith("http://") && !UserUrl.startsWith("https://")) {
+          safeUrl = "https://" + UserUrl;
+        }
+
+        var Text = document.getElementById("qr-code-url")
+       
+
+    fetch("http://localhost:3000/generate", {
+      method: "POST",             // or "GET", depending on your backend
+      headers: {
+        "Content-Type": "application/json",  // tell backend you're sending JSON
+      },
+      body: JSON.stringify({ url: safeUrl })   // data you're sending
+      })
+      
+      
+      .then(response => response.json())       // receive the backend response
+      .then(data => {
+        
+        // use the response (e.g., show image)
+       
+        
+         LastGenQrCodeImg = data.imageUrl
+      
+        console.log("Fetch success:", LastGenQrCodeImg);
+
+        document.querySelector("#qrCode").setAttribute("src",("http://localhost:3000/qr-images/"+LastGenQrCodeImg));
+        console.log(safeUrl)
+          Text.setAttribute("href",safeUrl);
+          Text.textContent = UserUrl;
+          Text.style.display = "inline";       // 👈 make sure it shows up
+          Text.style.visibility = "visible"; 
+        })  
+      .catch((error)=>{
+          console.error("Fetch failed:", error);
+
+      })
+
+          document.getElementById("Dqr").addEventListener("click",function(e){
+           e.preventDefault();
+
+           if (!LastGenQrCodeImg) {
+      alert("Please generate a QR code first.");
+      return;
+    }
+
+            var qrCodeBaseUri = ("http://localhost:3000/qr-images/"+LastGenQrCodeImg);
+
+             const a = document.createElement("a");
+              a.href = qrCodeBaseUri;
+              a.download = qrCodeBaseUri; // or use LastGenQrCodeImg if it has a name
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+
+            });
+
+
+        
+      
+      
+      
+
+    });
+
+
+   
+    
+    </script>
+  
+  </body>
+</html>
